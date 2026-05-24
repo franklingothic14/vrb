@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="uk" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>German Verbs Match Trainer</title>
+  <link rel="preconnect" href="https://api.fontshare.com" />
+  <link href="https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600,700&f[]=cabinet-grotesk@700,800&display=swap" rel="stylesheet" />
+  <style>
+    :root, [data-theme="light"] {
+      --bg: #eff2f9;
+      --surface: #e4ebf1;
+      --text: #3b4b57;
+      --muted: #8b9aa6;
+      --accent: #5b8af0;
+      --success: #4db8a0;
+      --error: #de7a7a;
+      --shadow-light: rgba(255,255,255,0.96);
+      --shadow-dark: rgba(116, 132, 151, 0.26);
+    }
+    [data-theme="dark"] {
+      --bg: #1e2025;
+      --surface: #1a1d22;
+      --text: #cad4de;
+      --muted: #738594;
+      --accent: #7ea4ff;
+      --success: #67d0b5;
+      --error: #f08e8e;
+      --shadow-light: rgba(255,255,255,0.045);
+      --shadow-dark: rgba(0,0,0,0.48);
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; min-height: 100%; }
+    body {
+      min-height: 100dvh;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'General Sans', sans-serif;
+      transition: background .25s ease, color .25s ease;
+    }
+    button, select { font: inherit; color: inherit; }
+    .wrap {
+      width: min(920px, calc(100% - 28px));
+      margin: 0 auto;
+      padding: 32px 0 48px;
+    }
+    .top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 28px;
+    }
+    .title {
+      text-align: center;
+      flex: 1;
+    }
+    h1 {
+      margin: 0;
+      font-family: 'Cabinet Grotesk', sans-serif;
+      font-size: clamp(28px, 5vw, 48px);
+      line-height: 1;
+      letter-spacing: -0.04em;
+    }
+    .subtitle {
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 500;
+    }
+    .theme-btn,
+    .control,
+    .action-btn,
+    .card,
+    .done-btn {
+      border: none;
+      background: var(--bg);
+      box-shadow: 8px 8px 16px var(--shadow-dark), -8px -8px 16px var(--shadow-light);
+    }
+    .theme-btn {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    .controls {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 26px;
+    }
+    .control {
+      border-radius: 16px;
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 600;
+    }
+    select {
+      background: transparent;
+      border: none;
+      outline: none;
+      color: var(--text);
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .action-btn, .done-btn {
+      border-radius: 16px;
+      padding: 12px 18px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 700;
+      transition: transform .15s ease, box-shadow .15s ease, color .15s ease;
+    }
+    .action-btn:active,
+    .theme-btn:active,
+    .done-btn:active,
+    .card.selected {
+      box-shadow: inset 5px 5px 12px var(--shadow-dark), inset -5px -5px 12px var(--shadow-light);
+    }
+    .board {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+    .card {
+      min-height: 110px;
+      border-radius: 22px;
+      padding: 12px 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      cursor: pointer;
+      transition: transform .18s ease, color .18s ease, box-shadow .18s ease;
+      position: relative;
+    }
+    .card:hover { transform: translateY(-2px); }
+    .card.matched {
+      color: var(--success);
+      cursor: default;
+      box-shadow: inset 4px 4px 10px var(--shadow-dark), inset -4px -4px 10px var(--shadow-light);
+    }
+    .card.wrong {
+      color: var(--error);
+      box-shadow: inset 4px 4px 10px var(--shadow-dark), inset -4px -4px 10px var(--shadow-light);
+    }
+    .word {
+      font-family: 'Cabinet Grotesk', sans-serif;
+      font-size: clamp(18px, 1.8vw, 24px);
+      line-height: 1.08;
+      letter-spacing: -0.03em;
+      word-break: break-word;
+    }
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.22);
+      backdrop-filter: blur(10px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+    .overlay.show { display: flex; }
+    .modal {
+      width: min(360px, 100%);
+      background: var(--bg);
+      border-radius: 28px;
+      padding: 34px 28px;
+      text-align: center;
+      box-shadow: 12px 12px 28px var(--shadow-dark), -12px -12px 28px var(--shadow-light);
+    }
+    .modal h2 {
+      margin: 0 0 10px;
+      font-family: 'Cabinet Grotesk', sans-serif;
+      font-size: 28px;
+      letter-spacing: -0.04em;
+    }
+    .modal p {
+      margin: 0 0 22px;
+      color: var(--muted);
+      font-size: 15px;
+    }
+    @media (max-width: 760px) {
+      .board { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+      .card { min-height: 92px; padding: 10px 8px; border-radius: 20px; }
+      .word { font-size: 17px; }
+    }
+    @media (max-width: 520px) {
+      .wrap { width: min(100% - 16px, 100%); padding-top: 18px; }
+      .top { margin-bottom: 16px; }
+      .subtitle { font-size: 12px; }
+      .controls { gap: 10px; margin-bottom: 18px; }
+      .control, .action-btn, .theme-btn { padding: 10px 12px; font-size: 13px; }
+      .board { gap: 8px; }
+      .card { min-height: 74px; padding: 8px 6px; border-radius: 18px; }
+      .word { font-size: 14px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="top">
+      <div style="width:44px"></div>
+      <div class="title">
+        <h1>Verb Match</h1>
+        <div class="subtitle">Тільки слова та переклади — без зайвого</div>
+      </div>
+      <button class="theme-btn" id="themeBtn" aria-label="Змінити тему">☀️</button>
+    </div>
+
+    <div class="controls">
+      <label class="control">
+        <span>Рівень</span>
+        <select id="levelSelect">
+          <option value="A1" selected>A1</option>
+          <option value="A2">A2</option>
+          <option value="B1">B1</option>
+        </select>
+      </label>
+      <button class="action-btn" id="shuffleBtn">Нова сітка</button>
+    </div>
+
+    <main class="board" id="board"></main>
+  </div>
+
+  <div class="overlay" id="overlay" role="dialog" aria-modal="true">
+    <div class="modal">
+      <h2>Готово</h2>
+      <p>Усі слова з’єднано правильно.</p>
+      <button class="done-btn" id="doneBtn">Ще раз</button>
+    </div>
+  </div>
+
+  <script>
+    const verbs = [
+      { de: 'sein', uk: 'бути' },
+      { de: 'haben', uk: 'мати' },
+      { de: 'werden', uk: 'ставати' },
+      { de: 'gehen', uk: 'йти' },
+      { de: 'kommen', uk: 'приходити' },
+      { de: 'machen', uk: 'робити' },
+      { de: 'sagen', uk: 'казати' },
+      { de: 'geben', uk: 'давати' },
+      { de: 'sehen', uk: 'бачити' },
+      { de: 'finden', uk: 'знаходити' },
+      { de: 'bleiben', uk: 'залишатися' },
+      { de: 'nehmen', uk: 'брати' },
+      { de: 'heißen', uk: 'називатися' },
+      { de: 'denken', uk: 'думати' },
+      { de: 'bringen', uk: 'приносити' },
+      { de: 'wissen', uk: 'знати (факт)' },
+      { de: 'kennen', uk: 'знати' },
+      { de: 'sprechen', uk: 'говорити' },
+      { de: 'lernen', uk: 'вчити' },
+      { de: 'wohnen', uk: 'жити, мешкати' },
+      { de: 'arbeiten', uk: 'працювати' },
+      { de: 'fragen', uk: 'питати' },
+      { de: 'antworten', uk: 'відповідати' },
+      { de: 'brauchen', uk: 'потребувати' },
+      { de: 'kaufen', uk: 'купувати' },
+      { de: 'verkaufen', uk: 'продавати' },
+      { de: 'essen', uk: 'їсти' },
+      { de: 'trinken', uk: 'пити' },
+      { de: 'fahren', uk: 'їхати' },
+      { de: 'lesen', uk: 'читати' },
+      { de: 'schreiben', uk: 'писати' },
+      { de: 'helfen', uk: 'допомагати' }
+    ];
+
+    const state = {
+      count: 6,
+      selected: [],
+      board: [],
+      lock: false,
+      matched: 0,
+      level: 'A1'
+    };
+
+    const boardEl = document.getElementById('board');
+    const levelSelectEl = document.getElementById('levelSelect');
+    const shuffleBtn = document.getElementById('shuffleBtn');
+    const overlay = document.getElementById('overlay');
+    const doneBtn = document.getElementById('doneBtn');
+    const themeBtn = document.getElementById('themeBtn');
+
+    function shuffle(arr) {
+      const copy = [...arr];
+      for (let i = copy.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [copy[i], copy[j]] = [copy[j], copy[i]];
+      }
+      return copy;
+    }
+
+    function buildBoard() {
+      const levelMap = {
+        A1: ['sein','haben','werden','gehen','kommen','machen','sagen','geben','sehen','finden','bleiben','nehmen','heißen','denken','bringen','wissen','kennen','sprechen','lernen','wohnen','arbeiten','fragen','antworten','brauchen','kaufen','verkaufen','essen','trinken','fahren','lesen','schreiben','helfen'],
+        A2: ['sein','haben','werden','gehen','kommen','machen','sagen','geben','sehen','finden','bleiben','nehmen','denken','bringen','wissen','kennen','sprechen','lernen','wohnen','arbeiten','fragen','antworten','brauchen','kaufen','verkaufen','essen','trinken','fahren','lesen','schreiben','helfen'],
+        B1: null
+      };
+      const allowed = levelMap[state.level];
+      const pool = allowed ? verbs.filter(v => allowed.includes(v.de)) : verbs;
+      const chosen = shuffle(pool).slice(0, 6);
+      const cards = [];
+      chosen.forEach((item, index) => {
+        cards.push({ id: `de-${index}`, pair: index, text: item.de, type: 'de', matched: false });
+        cards.push({ id: `uk-${index}`, pair: index, text: item.uk, type: 'uk', matched: false });
+      });
+      state.board = shuffle(cards);
+      state.selected = [];
+      state.lock = false;
+      state.matched = 0;
+      render();
+    }
+
+    function render() {
+      boardEl.innerHTML = '';
+      state.board.forEach(card => {
+        const btn = document.createElement('button');
+        btn.className = 'card';
+        if (card.matched) btn.classList.add('matched');
+        if (state.selected.some(item => item.id === card.id)) btn.classList.add('selected');
+        btn.innerHTML = `<span class="word">${card.text}</span>`;
+        btn.disabled = state.lock || card.matched;
+        btn.addEventListener('click', () => onCardClick(card.id, btn));
+        boardEl.appendChild(btn);
+      });
+    }
+
+    function onCardClick(id, btn) {
+      if (state.lock) return;
+      const card = state.board.find(item => item.id === id);
+      if (!card || card.matched) return;
+      if (state.selected.some(item => item.id === id)) return;
+
+      state.selected.push(card);
+      render();
+      if (state.selected.length < 2) return;
+
+      state.lock = true;
+      const [first, second] = state.selected;
+      const ok = first.pair === second.pair && first.type !== second.type;
+
+      if (ok) {
+        state.board = state.board.map(item => item.pair === first.pair ? { ...item, matched: true } : item);
+        state.matched += 1;
+        setTimeout(() => {
+          state.selected = [];
+          state.lock = false;
+          render();
+          if (state.matched === state.count) overlay.classList.add('show');
+        }, 220);
+      } else {
+        const buttons = [...boardEl.children];
+        buttons.forEach((button, index) => {
+          const current = state.board[index];
+          if (current.id === first.id || current.id === second.id) button.classList.add('wrong');
+        });
+        setTimeout(() => {
+          state.selected = [];
+          state.lock = false;
+          render();
+        }, 420);
+      }
+    }
+
+    levelSelectEl.addEventListener('change', () => {
+      state.level = levelSelectEl.value;
+      overlay.classList.remove('show');
+      buildBoard();
+    });
+
+    shuffleBtn.addEventListener('click', () => {
+      overlay.classList.remove('show');
+      buildBoard();
+    });
+
+    doneBtn.addEventListener('click', () => {
+      overlay.classList.remove('show');
+      buildBoard();
+    });
+
+    overlay.addEventListener('click', (e) => {
+      if (e.target === overlay) overlay.classList.remove('show');
+    });
+
+    themeBtn.addEventListener('click', () => {
+      const html = document.documentElement;
+      const next = html.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+      html.setAttribute('data-theme', next);
+      themeBtn.textContent = next === 'light' ? '☀️' : '🌙';
+    });
+
+    buildBoard();
+  </script>
+</body>
+</html>
