@@ -17,7 +17,6 @@
       --dark: #6E7F8D;
       --text: #3a4a55;
       --muted: #8a9baa;
-      --faint: #B5BFC6;
       --shadow-light: #FAFBFF;
       --shadow-dark: rgba(22, 27, 29, 0.23);
       --accent-inf: #5b8af0;
@@ -32,7 +31,6 @@
       --dark: #c8d6e5;
       --text: #b0bec8;
       --muted: #6a7f8d;
-      --faint: #404a54;
       --shadow-light: rgba(255, 255, 255, 0.04);
       --shadow-dark: rgba(0, 0, 0, 0.45);
       --accent-inf: #5b8af0;
@@ -121,13 +119,12 @@
       box-shadow: inset 3px 3px 7px var(--shadow-dark), inset -3px -3px 7px var(--shadow-light);
     }
 
-    /* CONTROLS */
+    /* CONTROLS ROW */
     .controls {
       display: flex;
       flex-wrap: wrap;
-      gap: 12px;
+      gap: 14px;
       align-items: center;
-      justify-content: space-between;
       background: var(--bg);
       border-radius: 20px;
       padding: 18px 22px;
@@ -135,18 +132,18 @@
       box-shadow: 6px 6px 14px var(--shadow-dark), -6px -6px 14px var(--shadow-light);
     }
 
+    /* left zone: neues spiel + mischen + level dropdown */
     .controls-left {
       display: flex;
       gap: 10px;
-      flex-wrap: wrap;
       align-items: center;
+      flex-wrap: wrap;
     }
 
-    /* PROGRESS — now left-side */
+    /* center zone: progressbar */
     .controls-progress {
       flex: 1;
-      min-width: 120px;
-      max-width: 280px;
+      min-width: 140px;
     }
 
     .progress-meta {
@@ -173,7 +170,15 @@
       transition: width .4s ease;
     }
 
-    /* BUTTONS */
+    /* right zone: lang dropdown + stats */
+    .controls-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-left: auto;
+    }
+
+    /* ─── SHARED BUTTON ─── */
     .btn {
       border: none;
       border-radius: 12px;
@@ -184,7 +189,7 @@
       cursor: pointer;
       transition: all .15s;
       background: var(--bg);
-      color: var(--text);
+      color: var(--muted);
       box-shadow: 4px 4px 10px var(--shadow-dark), -4px -4px 10px var(--shadow-light);
       letter-spacing: .3px;
     }
@@ -198,131 +203,121 @@
       transform: scale(.98);
     }
 
+    /* Neues Spiel — єдина акцентна кнопка */
     .btn-primary {
       background: var(--dark);
       color: var(--bg);
     }
 
-    /* LEVEL PILLS */
-    .level-switch {
-      display: flex;
-      gap: 6px;
-      flex-wrap: wrap;
-    }
-
-    .level-pill {
-      border: none;
-      border-radius: 999px;
-      padding: 9px 14px;
-      font-size: 13px;
-      font-weight: 700;
-      font-family: inherit;
-      cursor: pointer;
-      background: var(--bg);
-      color: var(--muted);
-      box-shadow: 4px 4px 10px var(--shadow-dark), -4px -4px 10px var(--shadow-light);
-      transition: all .15s;
-    }
-
-    .level-pill:hover {
+    .btn-primary:hover {
       box-shadow: 6px 6px 14px var(--shadow-dark), -6px -6px 14px var(--shadow-light);
     }
 
-    .level-pill.active {
-      background: var(--dark);
-      color: var(--bg);
-    }
-
-    /* LANGUAGE DROPDOWN */
-    .lang-dropdown-wrap {
+    /* ─── DROPDOWN (рівень і мова — однаковий стиль) ─── */
+    .dropdown-wrap {
       position: relative;
     }
 
-    .lang-dropdown-btn {
+    .dropdown-trigger {
       border: none;
-      border-radius: 999px;
+      border-radius: 12px;
       padding: 9px 16px;
       font-size: 13px;
       font-weight: 700;
       font-family: inherit;
       cursor: pointer;
-      background: var(--dark);
-      color: var(--bg);
+      background: var(--bg);
+      color: var(--muted);
       box-shadow: 4px 4px 10px var(--shadow-dark), -4px -4px 10px var(--shadow-light);
       transition: all .15s;
       display: flex;
       align-items: center;
       gap: 6px;
+      white-space: nowrap;
     }
 
-    .lang-dropdown-btn:hover {
+    .dropdown-trigger:hover {
       box-shadow: 6px 6px 14px var(--shadow-dark), -6px -6px 14px var(--shadow-light);
     }
 
-    .lang-dropdown-btn::after {
-      content: '▾';
-      font-size: 11px;
-      opacity: .7;
+    .dropdown-trigger .chevron {
+      font-size: 10px;
+      opacity: .6;
+      transition: transform .2s;
     }
 
-    .lang-dropdown-menu {
+    .dropdown-wrap.open .chevron {
+      transform: rotate(180deg);
+    }
+
+    /* меню у стилі Figma/Threads */
+    .dropdown-menu {
       display: none;
       position: absolute;
-      top: calc(100% + 8px);
+      top: calc(100% + 10px);
       left: 0;
+      min-width: 150px;
       background: var(--bg);
-      border-radius: 14px;
-      box-shadow: 6px 6px 18px var(--shadow-dark), -4px -4px 12px var(--shadow-light);
-      padding: 8px;
-      z-index: 100;
-      min-width: 110px;
+      border-radius: 16px;
+      box-shadow: 8px 8px 24px var(--shadow-dark), -4px -4px 14px var(--shadow-light);
+      padding: 6px;
+      z-index: 200;
       flex-direction: column;
-      gap: 4px;
+      gap: 2px;
     }
 
-    .lang-dropdown-menu.open {
+    /* lang dropdown відкривається вправо */
+    .dropdown-wrap.lang-wrap .dropdown-menu {
+      left: auto;
+      right: 0;
+    }
+
+    .dropdown-wrap.open .dropdown-menu {
       display: flex;
     }
 
-    .lang-option {
+    .dropdown-item {
       border: none;
       background: transparent;
       border-radius: 10px;
-      padding: 8px 14px;
+      padding: 10px 14px;
       font-size: 13px;
-      font-weight: 700;
+      font-weight: 600;
       font-family: inherit;
       cursor: pointer;
       color: var(--muted);
       text-align: left;
-      transition: all .12s;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transition: background .12s, color .12s;
+      white-space: nowrap;
     }
 
-    .lang-option:hover {
+    .dropdown-item:hover {
       background: var(--surface);
       color: var(--dark);
     }
 
-    .lang-option.active {
+    /* активний елемент: таблетка зліва */
+    .dropdown-item.active {
       color: var(--dark);
       background: var(--surface);
+      box-shadow: inset 2px 2px 5px var(--shadow-dark), inset -2px -2px 5px var(--shadow-light);
     }
 
-    /* STATS — centered, no züge */
+    /* ─── STATS ─── */
     .stats {
       display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      justify-content: center;
-      width: 100%;
+      gap: 8px;
     }
 
     .stat {
       background: var(--bg);
       border-radius: 12px;
-      padding: 8px 24px;
+      padding: 8px 18px;
       text-align: center;
-      min-width: 90px;
+      min-width: 80px;
       box-shadow: inset 3px 3px 7px var(--shadow-dark), inset -3px -3px 7px var(--shadow-light);
     }
 
@@ -339,7 +334,6 @@
     .stat-value {
       font-size: 18px;
       font-weight: 700;
-      color: var(--dark);
       font-variant-numeric: tabular-nums;
       font-family: "Cabinet Grotesk", sans-serif;
     }
@@ -352,15 +346,14 @@
       color: var(--red);
     }
 
-    /* GAME BOARD */
+    /* ─── GAME BOARD ─── */
     .game-area {
       display: grid;
       grid-template-columns: repeat(4, minmax(0, 1fr));
       gap: 12px;
-      justify-content: center;
-      justify-items: center;
       margin: 0 auto;
       max-width: 760px;
+      justify-items: center;
     }
 
     .card {
@@ -421,7 +414,7 @@
       cursor: default;
     }
 
-    /* LOG */
+    /* ─── LOG ─── */
     .log {
       max-width: 760px;
       margin: 18px auto 0;
@@ -431,7 +424,7 @@
       box-shadow: inset 3px 3px 7px var(--shadow-dark), inset -3px -3px 7px var(--shadow-light);
       color: var(--muted);
       font-size: 13px;
-      line-height: 1.45;
+      line-height: 1.6;
       min-height: 48px;
     }
 
@@ -439,7 +432,7 @@
       color: var(--dark);
     }
 
-    @media (max-width: 600px) {
+    @media (max-width: 640px) {
       h1 {
         font-size: 20px;
       }
@@ -449,8 +442,11 @@
         align-items: flex-start;
       }
 
+      .controls-right {
+        margin-left: 0;
+      }
+
       .controls-progress {
-        max-width: 100%;
         width: 100%;
       }
 
@@ -465,69 +461,84 @@
 
 <body>
   <div class="wrap">
+
     <header>
       <div class="header-spacer"></div>
       <div class="header-center">
         <h1>German Verbs Match Trainer</h1>
         <p class="subtitle">Deutsches Verb und Übersetzung</p>
       </div>
-      <button class="theme-toggle" id="themeToggle" aria-label="Hell/Dunkel">🌙</button>
+      <button class="theme-toggle" id="themeToggle">🌙</button>
     </header>
 
     <div class="controls">
-      <!-- рядок 1: кнопки + прогресбар + dropdown мови -->
+
+      <!-- ЛІВО: Neues Spiel + Mischen + Level dropdown -->
       <div class="controls-left">
         <button class="btn btn-primary" id="newGameBtn">Neues Spiel</button>
         <button class="btn" id="reshuffleBtn">Mischen</button>
 
-        <div class="level-switch" id="levelSwitch">
-          <button class="level-pill active" data-level="all">Alle</button>
-          <button class="level-pill" data-level="a1">A1</button>
-          <button class="level-pill" data-level="a2">A2</button>
-          <button class="level-pill" data-level="b1">B1</button>
-        </div>
-
-        <!-- Прогресбар — між пілюлями та мовою -->
-        <div class="controls-progress">
-          <div class="progress-meta">
-            <div>Feld <span id="gridSize">4×3</span></div>
-            <div>Paare: <span id="pairsNeeded">6</span></div>
-          </div>
-          <div class="progress-track">
-            <div class="progress-fill" id="progressFill" style="width:0%"></div>
-          </div>
-        </div>
-
-        <!-- Dropdown мови -->
-        <div class="lang-dropdown-wrap" id="langDropdownWrap">
-          <button class="lang-dropdown-btn" id="langDropdownBtn">UKR</button>
-          <div class="lang-dropdown-menu" id="langDropdownMenu">
-            <button class="lang-option active" data-lang="uk">🇺🇦 UKR</button>
-            <button class="lang-option" data-lang="en">🇬🇧 EN</button>
-            <button class="lang-option" data-lang="hu">🇭🇺 HU</button>
+        <!-- Level dropdown -->
+        <div class="dropdown-wrap" id="levelDropWrap">
+          <button class="dropdown-trigger" id="levelDropBtn">
+            <span id="levelLabel">Alle</span>
+            <span class="chevron">▾</span>
+          </button>
+          <div class="dropdown-menu">
+            <button class="dropdown-item active" data-level="all">Alle Verben</button>
+            <button class="dropdown-item" data-level="a1">A1 — ei/ie · i/a · ie/o · e/a · a/u</button>
+            <button class="dropdown-item" data-level="a2">A2 — a/ie · e/o · Misch · Bes.</button>
+            <button class="dropdown-item" data-level="b1">B1 — Modalverben</button>
           </div>
         </div>
       </div>
 
-      <!-- рядок 2: stats (тільки Richtig / Falsch) центровані -->
-      <div class="stats">
-        <div class="stat richtig">
-          <span class="stat-label">Richtig</span>
-          <span class="stat-value" id="statMatches">0</span>
+      <!-- ЦЕНТР: прогресбар -->
+      <div class="controls-progress">
+        <div class="progress-meta">
+          <span>Feld 4×3</span>
+          <span>Paare: <span id="pairsNeeded">6</span></span>
         </div>
-        <div class="stat falsch">
-          <span class="stat-label">Falsch</span>
-          <span class="stat-value" id="statWrong">0</span>
+        <div class="progress-track">
+          <div class="progress-fill" id="progressFill" style="width:0%"></div>
         </div>
       </div>
-    </div>
+
+      <!-- ПРАВО: stats + lang dropdown -->
+      <div class="controls-right">
+        <div class="stats">
+          <div class="stat richtig">
+            <span class="stat-label">Richtig</span>
+            <span class="stat-value" id="statMatches">0</span>
+          </div>
+          <div class="stat falsch">
+            <span class="stat-label">Falsch</span>
+            <span class="stat-value" id="statWrong">0</span>
+          </div>
+        </div>
+
+        <!-- Lang dropdown -->
+        <div class="dropdown-wrap lang-wrap" id="langDropWrap">
+          <button class="dropdown-trigger" id="langDropBtn">
+            <span id="langLabel">UKR</span>
+            <span class="chevron">▾</span>
+          </button>
+          <div class="dropdown-menu">
+            <button class="dropdown-item active" data-lang="uk">🇺🇦 Українська</button>
+            <button class="dropdown-item" data-lang="en">🇬🇧 English</button>
+            <button class="dropdown-item" data-lang="hu">🇭🇺 Magyar</button>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /controls -->
 
     <div class="game-area" id="gameBoard"></div>
     <div class="log" id="logBox">&nbsp;</div>
-  </div>
+
+  </div><!-- /wrap -->
 
   <script src="./words.js"></script>
-
   <script>
     const LEVELS = {
       all: [...window.WORDS_ALL],
@@ -536,44 +547,39 @@
       b1: [...window.WORDS_B1]
     };
 
+    const LEVEL_LABELS = { all: 'Alle', a1: 'A1', a2: 'A2', b1: 'B1' };
+    const LANG_LABELS = { uk: 'UKR', en: 'EN', hu: 'HU' };
+
     const langKey = 'german-verb-matcher-lang';
     const logKey = 'german-verb-matcher-log';
     const themeKey = 'german-verb-matcher-theme';
 
-    const LANG_LABELS = { uk: 'UKR', en: 'EN', hu: 'HU' };
-
     let currentLang = localStorage.getItem(langKey) ||
       (navigator.language.startsWith('uk') ? 'uk' :
-        navigator.language.startsWith('en') ? 'en' :
-          navigator.language.startsWith('hu') ? 'hu' : 'uk');
+        navigator.language.startsWith('hu') ? 'hu' : 'uk');
 
     let levelKey = 'all';
-    let cards = [];
-    let selected = [];
-    let lock = false;
-    let correct = 0;
-    let wrong = 0;
+    let cards = [], selected = [], lock = false;
+    let correct = 0, wrong = 0;
     let currentSet = [];
     let logHistory = JSON.parse(localStorage.getItem(logKey) || '[]');
 
+    // DOM refs
     const board = document.getElementById('gameBoard');
     const statMatches = document.getElementById('statMatches');
     const statWrong = document.getElementById('statWrong');
-    const gridSize = document.getElementById('gridSize');
     const pairsNeeded = document.getElementById('pairsNeeded');
     const progressFill = document.getElementById('progressFill');
     const newGameBtn = document.getElementById('newGameBtn');
     const reshuffleBtn = document.getElementById('reshuffleBtn');
     const themeToggle = document.getElementById('themeToggle');
-    const levelSwitch = document.getElementById('levelSwitch');
     const logBox = document.getElementById('logBox');
     const html = document.documentElement;
 
-    // --- тема ---
+    // ── Тема ──
     let dark = localStorage.getItem(themeKey) === 'dark';
     html.setAttribute('data-theme', dark ? 'dark' : 'light');
     themeToggle.textContent = dark ? '☀️' : '🌙';
-
     themeToggle.addEventListener('click', () => {
       dark = !dark;
       html.setAttribute('data-theme', dark ? 'dark' : 'light');
@@ -581,43 +587,61 @@
       localStorage.setItem(themeKey, dark ? 'dark' : 'light');
     });
 
-    // --- dropdown мови ---
-    const dropBtn = document.getElementById('langDropdownBtn');
-    const dropMenu = document.getElementById('langDropdownMenu');
-    const dropWrap = document.getElementById('langDropdownWrap');
+    // ── Generic dropdown builder ──
+    function initDropdown(wrapId, onSelect) {
+      const wrap = document.getElementById(wrapId);
+      const btn = wrap.querySelector('.dropdown-trigger');
+      const menu = wrap.querySelector('.dropdown-menu');
+      const items = wrap.querySelectorAll('.dropdown-item');
 
-    function setDropdownLabel(lang) {
-      dropBtn.textContent = LANG_LABELS[lang] + ' ▾';
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        // закрити всі інші
+        document.querySelectorAll('.dropdown-wrap.open').forEach(w => {
+          if (w !== wrap) w.classList.remove('open');
+        });
+        wrap.classList.toggle('open');
+      });
+
+      items.forEach(item => {
+        item.addEventListener('click', () => {
+          items.forEach(i => i.classList.remove('active'));
+          item.classList.add('active');
+          wrap.classList.remove('open');
+          onSelect(item);
+        });
+      });
+
+      return wrap;
     }
 
-    dropBtn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      dropMenu.classList.toggle('open');
-    });
-
-    document.addEventListener('click', () => dropMenu.classList.remove('open'));
-
-    dropMenu.addEventListener('click', (e) => {
-      const opt = e.target.closest('.lang-option');
-      if (!opt) return;
-      const lang = opt.dataset.lang;
-      document.querySelectorAll('.lang-option').forEach(b =>
-        b.classList.toggle('active', b === opt)
-      );
-      setDropdownLabel(lang);
-      currentLang = lang;
-      localStorage.setItem(langKey, lang);
-      dropMenu.classList.remove('open');
+    // Level dropdown
+    initDropdown('levelDropWrap', (item) => {
+      levelKey = item.dataset.level;
+      document.getElementById('levelLabel').textContent = LEVEL_LABELS[levelKey];
       buildGame();
     });
 
-    // ставимо початковий стан dropdown
-    setDropdownLabel(currentLang);
-    document.querySelectorAll('.lang-option').forEach(b =>
+    // Lang dropdown
+    initDropdown('langDropWrap', (item) => {
+      currentLang = item.dataset.lang;
+      document.getElementById('langLabel').textContent = LANG_LABELS[currentLang];
+      localStorage.setItem(langKey, currentLang);
+      buildGame();
+    });
+
+    // встановити початковий active у lang dropdown
+    document.querySelectorAll('#langDropWrap .dropdown-item').forEach(b =>
       b.classList.toggle('active', b.dataset.lang === currentLang)
     );
+    document.getElementById('langLabel').textContent = LANG_LABELS[currentLang];
 
-    // --- утиліти ---
+    // закрити dropdown при кліку поза ним
+    document.addEventListener('click', () => {
+      document.querySelectorAll('.dropdown-wrap.open').forEach(w => w.classList.remove('open'));
+    });
+
+    // ── Утиліти ──
     function shuffle(arr) {
       const a = [...arr];
       for (let i = a.length - 1; i > 0; i--) {
@@ -632,7 +656,7 @@
       const pres = inf.endsWith('en') ? inf.replace(/en$/, 't') : inf;
       const praet = word.praeteritum || '—';
       const part = (word.perfekt || '').replace(/^(hat|ist)\s+/, '');
-      const tr = word[currentLang] || word.uk || word.en || word.hu || '';
+      const tr = word[currentLang] || word.uk || '';
       return `<strong>${inf}</strong> | ${pres}, ${praet}, hat ${part} | ${tr}`;
     }
 
@@ -644,20 +668,17 @@
       logBox.innerHTML = logHistory.length ? logHistory.join('<br>') : '&nbsp;';
     }
 
-    // --- гра ---
+    // ── Гра ──
     function buildGame() {
       const pool = shuffle(LEVELS[levelKey]).slice(0, 6);
       currentSet = pool;
       cards = [];
       pool.forEach((w, i) => {
-        cards.push({ id: `de-${i}`, pair: i, text: w.infinitiv, type: 'de', matched: false });
-        cards.push({ id: `tr-${i}`, pair: i, text: w[currentLang] || w.uk || w.en || w.hu, type: 'tr', matched: false });
+        cards.push({ pair: i, text: w.infinitiv, type: 'de', matched: false });
+        cards.push({ pair: i, text: w[currentLang] || w.uk || w.en || w.hu, type: 'tr', matched: false });
       });
       cards = shuffle(cards);
-      selected = [];
-      lock = false;
-      correct = 0;
-      wrong = 0;
+      selected = []; lock = false; correct = 0; wrong = 0;
       render();
       updateStats();
       renderLog();
@@ -681,19 +702,16 @@
       statMatches.textContent = correct;
       statWrong.textContent = wrong;
       pairsNeeded.textContent = '6';
-      gridSize.textContent = '4×3';
       progressFill.style.width = `${(correct / 6) * 100}%`;
     }
 
     function onPick(idx) {
       if (lock) return;
       const card = cards[idx];
-      if (card.matched) return;
-      if (selected.some(s => s.idx === idx)) return;
+      if (card.matched || selected.some(s => s.idx === idx)) return;
 
       selected.push({ idx, ...card });
       render();
-
       if (selected.length < 2) return;
 
       lock = true;
@@ -705,7 +723,6 @@
         correct++;
         renderLog(formatVerbLine(currentSet[a.pair]));
         updateStats();
-
         if (correct === 6) {
           setTimeout(() => buildGame(), 450);
         } else {
@@ -717,17 +734,6 @@
         setTimeout(() => { selected = []; lock = false; render(); }, 500);
       }
     }
-
-    // --- рівень ---
-    levelSwitch.addEventListener('click', (e) => {
-      const btn = e.target.closest('.level-pill');
-      if (!btn || !btn.dataset.level) return;
-      levelKey = btn.dataset.level;
-      document.querySelectorAll('#levelSwitch .level-pill').forEach(b =>
-        b.classList.toggle('active', b === btn)
-      );
-      buildGame();
-    });
 
     newGameBtn.addEventListener('click', buildGame);
     reshuffleBtn.addEventListener('click', buildGame);
